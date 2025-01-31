@@ -9,7 +9,7 @@ class Permisions(Enum):
 	shift_supervisor_tank_readonly = 0b1000
 	shift_supervisor_btb_admin = 0x10000
 	shift_supervisor_btb_readonly= 0x100000
-	shift_supervisor_pb_admin= 0x1000000
+	shift_supervisor_pb_readonly= 0x1000000
 	shift_supervisor_pb_admin= 0x10000000
 	shift_supervisor_reforming_admin= 0b100000000
 	shift_supervisor_reforming_readonly= 0b1000000000

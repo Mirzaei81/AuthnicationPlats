@@ -53,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone_number =models.CharField(max_length=255)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    permision_bit = models.BinaryField()
+    permision_bit = models.BinaryField(null=True)
     objects = UserManager()
     USERNAME_FIELD = "username"  # Use username for authentication
     REQUIRED_FIELDS = ['email',"phone_number"]  # Only eamil is required for extra fields
