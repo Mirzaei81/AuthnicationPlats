@@ -79,3 +79,26 @@ def reset_password(request):
 		return Response(data={"error":"کاربر نمیتواند رمز عبور رو عوض  کند"},status=400)
 	else:
 		return Response(data={"error":"پسورد ضعیف است"},status=400)
+@api_view(["Post"])
+@permission_classes([AllowAny])
+@swagger_auto_schema(method="POST",
+	tags=["ResetPassword"],
+	response={"200":int},request_body=openapi.Schema(
+	type=openapi.TYPE_OBJECT, 
+    properties={
+        'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
+        'email': openapi.Schema(type=openapi.TYPE_STRING, description='mail@example.com'),
+        'username': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+        'password': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+    },
+))
+def register(request):
+	phone_number=request.data['phone_number']
+	email=request.data['email']
+	username=request.data['username']
+	password=request.data['password']
+	try:
+		User.objects.create_user(phone_number=phone_number,username=username,password=password,email=email)
+		return Response(status=201)
+	except Exception as e:
+		return Response({"error":str(e)},status=400)

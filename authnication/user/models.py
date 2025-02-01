@@ -64,4 +64,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         Custom validation to ensure that at least email or username is provided.
         """
         if not self.email and not self.username:
-        	raise ValueError("At least one of email or username must be provided.")
+            raise ValueError("At least one of email or username must be provided.")
