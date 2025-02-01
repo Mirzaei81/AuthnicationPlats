@@ -13,11 +13,13 @@ import re
 def get_permistion(request):
 	return Response({"permision":[m.name for m in Permisions]})
 
-@swagger_auto_schema(method="POST",response={"200":int},request_body=openapi.Schema(
+@swagger_auto_schema(method="POST",
+	tags=["ResetPassword"],
+	response={"200":int},request_body=openapi.Schema(
 	type=openapi.TYPE_OBJECT, 
     properties={
         'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
-    }
+    },
 ))
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -28,12 +30,14 @@ def create_code(request):
 	except	ValueError as e:
 		return Response(data={"error":e.__str__()},status=400)
 
-@swagger_auto_schema(method="POST",response={"200":int},request_body=openapi.Schema(
+@swagger_auto_schema(method="POST",
+	tags=["ResetPassword"],
+	response={"200":int},request_body=openapi.Schema(
 	type=openapi.TYPE_OBJECT, 
     properties={
         'code': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
         'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
-    }
+    },
 ))
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -48,23 +52,24 @@ def is_valid(request):
 		return Response(data={"error":e.__str__()},status=400)
 	except KeyError as e:
 		return Response(data={"error":e.__str__()},status=400)
-@swagger_auto_schema(method="POST",response={"200":int},request_body=openapi.Schema(
+@swagger_auto_schema(method="POST",
+	tags=["ResetPassword"],
+	response={"200":int},request_body=openapi.Schema(
 	type=openapi.TYPE_OBJECT, 
     properties={
         'password': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
         'confirmation': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
         'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
-    }
+    },
 ))
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def reset_password(request):
 	passoword = request.data["password"]
 	phoneNumber = request.data["phone_number"]
-	pattern = r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+	pattern =r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"
 	if(re.match(pattern,passoword)):
-		user = 	 User.objects.get(phoneNumber=phoneNumber)
-		
+		user = 	 User.objects.get(phone_number=phoneNumber)
 		if user is None:
 			return  Response(status=500)
 		if user.reset_password:
