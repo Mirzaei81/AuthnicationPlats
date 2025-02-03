@@ -1,5 +1,6 @@
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import AllowAny
+from django.core.mail import send_mail
 from .permision import Permisions
 from .utils import send_message,check_sso_is_valid
 from .models import User
@@ -8,6 +9,7 @@ from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg  import openapi
 import re
+from utils import genrate_random_digit
 
 @api_view(["GET"])
 def get_permistion(request):
@@ -19,14 +21,24 @@ def get_permistion(request):
 	type=openapi.TYPE_OBJECT, 
     properties={
         'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
+        'email': openapi.Schema(type=openapi.TYPE_STRING, description='a@example.com'),
     },
 ))
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def create_code(request):
-	phone_number = request.data["phone_number"]
+	phone_number = request.data.get("phone_number",None)
+	email= request.data.get("email",None)
 	try:
-		return Response({"code":send_message(phone_number)})
+		if email:
+			code = genrate_random_digit(5)
+			try:
+				send_mail("احراز هویت کد",f"کد تاییدی شما {code}",from_email="test4@nopc.co",to=email,fail_silently=False)
+			except Exception as e:
+				return Response({"error":str(e)},status=400)
+			return Response({"code":code})
+		else:
+			return Response({"code":send_message(phone_number)})
 	except	ValueError as e:
 		return Response(data={"error":e.__str__()},status=400)
 

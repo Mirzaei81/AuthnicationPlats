@@ -1,6 +1,7 @@
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
+import os 
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -17,7 +18,6 @@ SECRET_KEY = 'django-insecure-!bw@(^py0+&ihbozg0p$c2utm_eora@=&j_$wrepz@65&n%-h7
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -69,8 +69,11 @@ WSGI_APPLICATION = 'authnication.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgres',
+        'NAME':"UserDB" ,
+        "HOST":"127.0.0.1",
+        "USER":os.getenv("PSQL_USER"),
+        "PASSWORD":os.getenv("PSQL_PASSWORD")
     }
 }
 
@@ -133,3 +136,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',  # Authentication classes
     ],
 }
+EMAIL_USE_TLS = True
+EMAIL_HOST ='mail.nopc.co'
+EMAIL_PORT =25
+EMAIL_HOST_USER = 'test4@nopc.co'
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASS")
