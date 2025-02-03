@@ -52,6 +52,7 @@ def is_valid(request):
 		return Response(data={"error":e.__str__()},status=400)
 	except KeyError as e:
 		return Response(data={"error":e.__str__()},status=400)
+
 @swagger_auto_schema(method="POST",
 	tags=["ResetPassword"],
 	response={"200":int},request_body=openapi.Schema(
@@ -79,8 +80,6 @@ def reset_password(request):
 		return Response(data={"error":"کاربر نمیتواند رمز عبور رو عوض  کند"},status=400)
 	else:
 		return Response(data={"error":"پسورد ضعیف است"},status=400)
-@api_view(["Post"])
-@permission_classes([AllowAny])
 @swagger_auto_schema(method="POST",
 	tags=["ResetPassword"],
 	response={"200":int},request_body=openapi.Schema(
@@ -92,6 +91,8 @@ def reset_password(request):
         'password': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
     },
 ))
+@api_view(["Post"])
+@permission_classes([AllowAny])
 def register(request):
 	phone_number=request.data['phone_number']
 	email=request.data['email']
