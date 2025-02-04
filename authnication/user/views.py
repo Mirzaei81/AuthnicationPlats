@@ -10,6 +10,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg  import openapi
 import re
 from utils import genrate_random_digit
+from django.db.utils import IntegrityError
 
 @api_view(["GET"])
 def get_permistion(request):
@@ -92,26 +93,20 @@ def reset_password(request):
 		return Response(data={"error":"کاربر نمیتواند رمز عبور رو عوض  کند"},status=400)
 	else:
 		return Response(data={"error":"پسورد ضعیف است"},status=400)
-@swagger_auto_schema(method="POST",
-	tags=["ResetPassword"],
-	response={"200":int},request_body=openapi.Schema(
-	type=openapi.TYPE_OBJECT, 
-    properties={
-        'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
-        'email': openapi.Schema(type=openapi.TYPE_STRING, description='mail@example.com'),
-        'username': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
-        'password': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
-    },
-))
-@api_view(["Post"])
-@permission_classes([AllowAny])
+
+swagger_auto_schema(method="POST",response={"200":UserSerilizer},request_body=registerSerilizer)
+@api_view(["POST"])
 def register(request):
-	phone_number=request.data['phone_number']
-	email=request.data['email']
-	username=request.data['username']
-	password=request.data['password']
-	try:
-		User.objects.create_user(phone_number=phone_number,username=username,password=password,email=email)
+	pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[*^$&]).{8,}$"
+	if (re.find(pattern,request.data.password) is None):
+		return Response({"Error":"Password is weak"},400)
+	registerData =registerSerilizer(data=request.data)
+	if registerData.is_valid():
+		try:
+			registerData.save()
+		except IntegrityError:
+			return Response({"username":"user with this username aleady exist"})
 		return Response(status=201)
-	except Exception as e:
-		return Response({"error":str(e)},status=400)
+	else:
+		return Response(registerData.errors,status=400)
+	
