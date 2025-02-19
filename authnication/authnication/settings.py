@@ -136,8 +136,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',  # Authentication classes
     ],
 }
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = False
 EMAIL_HOST ='mail.nopc.co'
 EMAIL_PORT =25
 EMAIL_HOST_USER = 'test4@nopc.co'
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASS")
+EMAIL_HOST_PASSWORD ="TTee$$tt.0192"

@@ -2,14 +2,13 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
 from .permision import Permisions
-from .utils import send_message,check_sso_is_valid
+from .utils import send_message,check_sso_is_valid,genrate_random_digit
 from .models import User
 from .serilaizers import *
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg  import openapi
 import re
-from utils import genrate_random_digit
 from django.db.utils import IntegrityError
 
 @api_view(["GET"])
@@ -34,7 +33,7 @@ def create_code(request):
 		if email:
 			code = genrate_random_digit(5)
 			try:
-				send_mail("احراز هویت کد",f"کد تاییدی شما {code}",from_email="test4@nopc.co",to=email,fail_silently=False)
+				send_mail("احراز هویت کد",f"کد تاییدی شما {code}",from_email="test4@nopc.co",recipient_list=[email],fail_silently=False)
 			except Exception as e:
 				return Response({"error":str(e)},status=400)
 			return Response({"code":code})
