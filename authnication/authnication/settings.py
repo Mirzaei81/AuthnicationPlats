@@ -70,7 +70,7 @@ WSGI_APPLICATION = 'authnication.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgres',
-        'NAME':"UserDB" ,
+        'NAME':"main" ,
         "HOST":"127.0.0.1",
         "USER":os.getenv("PSQL_USER"),
         "PASSWORD":os.getenv("PSQL_PASSWORD")

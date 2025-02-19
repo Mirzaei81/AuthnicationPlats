@@ -57,8 +57,11 @@ def create_code(request):
 def is_valid(request):
 	code = request.data["code"]
 	phone_number= request.data["phone_number"]
-	print(request.data,code)
+	mail= request.data["mail"]
 	try:
+		if(mail):
+			check_sso_is_valid(mail,code)
+			return   Response(status=201)
 		check_sso_is_valid(phone_number,code)
 		return   Response(status=201)
 	except	ValueError as e:

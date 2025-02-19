@@ -23,7 +23,10 @@ def send_message(number:str):
 	return response.text
 
 def check_sso_is_valid(phone_number:str,sso:str):
-	user:User | None = User.objects.get(phone_number=phone_number)
+	if("@" in phone_number):
+		user:User | None = User.objects.get(email=phone_number)
+	else:
+		user:User | None = User.objects.get(phone_number=phone_number)
 	if(user == None):
 		raise ValueError("کاربری با همچین شماره همراهی موحود نیست")
 	if phone_number in phoneNumber_singelton:
