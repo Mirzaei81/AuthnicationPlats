@@ -54,8 +54,8 @@ def create_code(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def is_valid(request):
-	code = request.data["code"]
-	phone_number= request.data["phone_number"]
+	code = request.data.get("code",None)
+	phone_number= request.data("phone_number",None)
 	mail= request.data["mail"]
 	try:
 		if(mail):
