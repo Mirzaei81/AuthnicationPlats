@@ -32,10 +32,10 @@ const ForgetPassword = () => {
       setLoading(true);
       setButtonText("در حال ارسال کد...");
       if (method === "sms") {
-        await axios.post("/api/code/", { phone_number });
+        await axios.post("/api/auth/code/", { phone_number });
       }
       else {
-        await axios.post("/api/code/", { email });
+        await axios.post("/api/auth/code/", { email });
       }
       setOtpFieldOpen(true);
       if (!timer) startTimer();
@@ -73,7 +73,7 @@ const ForgetPassword = () => {
       setLoading(true);
       setOtpError("");
 
-      const response = await axios.post("/api/valid/", {
+      const response = await axios.post("/api/auth/valid/", {
         [method === "sms" ? "phone_number" : "email"]:
           method === "sms" ? data.phone_number : data.email,
         code: data.otp,

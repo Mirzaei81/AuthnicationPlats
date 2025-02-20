@@ -39,7 +39,7 @@ const NewPassword = () => {
     try {
       setLoading(true);
       setErrorMessage("");
-      const response = await axios.post("/api/reset/", {
+      const response = await axios.post("/api/auth/reset/", {
         ...data,
         phone_number,
       });

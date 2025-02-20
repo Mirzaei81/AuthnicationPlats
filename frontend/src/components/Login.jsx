@@ -41,7 +41,7 @@ const Login = () => {
         localStorage.removeItem("savedPassword");
       }
 
-      const response = await axios.post("/api/token/", data);
+      const response = await axios.post("/api/auth/token/", data);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("isAdmin", response.data.is_admin);
       navigate("/");

@@ -7,10 +7,11 @@ export default defineConfig({
   plugins: [tailwindcss(), react()],
   base: "/auth",
   server: {
-    proxy: {
-      "/api": {
-        target: "http://127.0.0.1:8000/api/auth", // Main server address
+    proxy: {//it's for dev seerver only
+      "/api/auth": {
+        target: "http://127.0.0.1:8000/auth", // Main server address
         changeOrigin: true, // Request to modify the Origin header
+        secure:false,
       },
     },
   },
