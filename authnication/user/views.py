@@ -25,8 +25,8 @@ def get_permistion(request):
 	response={"200":int},request_body=openapi.Schema(
 	type=openapi.TYPE_OBJECT, 
     properties={
-        'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
-        'email': openapi.Schema(type=openapi.TYPE_STRING, description='a@example.com'),
+        'username': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
+        'password': openapi.Schema(type=openapi.TYPE_STRING, description='a@example.com'),
     },
 ))
 @api_view(["POST"])
