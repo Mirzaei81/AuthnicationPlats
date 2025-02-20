@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
-from .permision import Permisions
+from .permision import perimision_dict
 from .utils import send_message,check_sso_is_valid,genrate_random_digit
 from .models import User
 from .serilaizers import *
@@ -11,9 +11,11 @@ from drf_yasg  import openapi
 import re
 from django.db.utils import IntegrityError
 
+
 @api_view(["GET"])
+@permission_classes([AllowAny])
 def get_permistion(request):
-	return Response({"permision":[m.name for m in Permisions]})
+	return Response({"permision":[{m.name:v} for m,v in perimision_dict.items()]})
 
 @swagger_auto_schema(method="POST",
 	tags=["ResetPassword"],

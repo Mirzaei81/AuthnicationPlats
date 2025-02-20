@@ -5,15 +5,23 @@ from enum import Enum
 class Permisions(Enum):
 	plats_admin = 0b1
 	plats_readonly = 0b10
-	shift_supervisor_tank_admin = 0b100
-	shift_supervisor_tank_readonly = 0b1000
-	shift_supervisor_btb_admin = 0x10000
-	shift_supervisor_btb_readonly= 0x100000
-	shift_supervisor_pb_readonly= 0x1000000
-	shift_supervisor_pb_admin= 0x10000000
-	shift_supervisor_reforming_admin= 0b100000000
-	shift_supervisor_reforming_readonly= 0b1000000000
-	
+	shift_supervisor_tank = 0b100
+	shift_supervisor_btx = 0b10000
+	shift_supervisor_admin = 0b1000
+	shift_supervisor_readonly= 0b10000
+	shift_supervisor_px= 0b1000000
+	shift_supervisor_reforming= 0b1000000000
+
+perimision_dict = {
+	Permisions.plats_admin :"ادمین پلتس",
+	Permisions.plats_readonly :"پلتس خواندن",
+	Permisions.shift_supervisor_admin :" ادمین کشیک ارشد",
+	Permisions.shift_supervisor_readonly :"کشیک ارشد خواندن",
+	Permisions.shift_supervisor_tank :"کشیک ارشد - تانک ",
+	Permisions.shift_supervisor_btx :"کشیک ارشد - btx",
+	Permisions.shift_supervisor_px:"کشیک ارشد - px",
+	Permisions.shift_supervisor_reforming:"کشیک ارشد - refroming",
+}	
 
 class HasAppPermisionOrReadOnly(BasePermission): # add this class to permision _list 
 	""""
