@@ -3,14 +3,14 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 from enum import Enum
 
 class Permisions(Enum):
-	plats_admin = 0b1
-	plats_readonly = 0b10
-	shift_supervisor_tank = 0b100
-	shift_supervisor_btx = 0b10000
-	shift_supervisor_admin = 0b1000
-	shift_supervisor_readonly= 0b10000
-	shift_supervisor_px= 0b1000000
-	shift_supervisor_reforming= 0b1000000000
+	plats_admin = b"1"
+	plats_readonly = b"10"
+	shift_supervisor_tank = b"100"
+	shift_supervisor_btx = b"10000"
+	shift_supervisor_admin = b"1000"
+	shift_supervisor_readonly= b"10000"
+	shift_supervisor_px= b"1000000"
+	shift_supervisor_reforming= b"1000000000"
 
 perimision_dict = {
 	Permisions.plats_admin :"ادمین پلتس",

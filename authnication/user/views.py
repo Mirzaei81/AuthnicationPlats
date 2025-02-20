@@ -2,10 +2,13 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
 from .permision import perimision_dict
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
 from .utils import send_message,check_sso_is_valid,genrate_random_digit
 from .models import User
 from .serilaizers import *
 from rest_framework.response import Response
+from .permision import Permisions
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg  import openapi
 import re
@@ -26,6 +29,33 @@ def get_permistion(request):
         'email': openapi.Schema(type=openapi.TYPE_STRING, description='a@example.com'),
     },
 ))
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def get_token(reqeuest):
+	username =reqeuest.data["username"]
+	password =reqeuest.data["password"]
+	user = authenticate(username=username,password=password)
+	if user==None:
+		return Response(status=404) 
+	refresh = RefreshToken.for_user(user)
+
+	permission = { }
+	def andbytes(abytes, bbytes):
+		return bytes([a & b for a, b in zip(abytes[::-1], bbytes[::-1])][::-1])
+	for p in Permisions:
+		if andbytes(p.value,user.permision_bit) == p.value:
+			permission[p.name] = True
+		else:
+			permission[p.name] = False
+	print(permission)
+	permission.update({
+		'refresh': str(refresh),
+        'access': str(refresh.access_token),
+	}
+	)
+
+	return Response(permission)
+	
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def create_code(request):
@@ -80,6 +110,7 @@ def is_valid(request):
         'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
     },
 ))
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def reset_password(request):

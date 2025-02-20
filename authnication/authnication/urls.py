@@ -26,7 +26,7 @@ urlpatterns = [
     path('api/code/',      user_view.create_code, name='Code'),
     path('api/valid/',     user_view.is_valid, name='Code'),
     path('api/reset/',     user_view.reset_password, name='Code'),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', user_view.get_token, name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path("api/docs",schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui')
 ]
