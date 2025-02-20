@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from "/logo.png"
+import bg from "/bg.jpg"
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -17,12 +19,12 @@ const Logout = () => {
   return (
     <div
       className="flex h-screen items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: "url('/images/bg.jpg')" }}
+      style={{ backgroundImage: `url(${bg})` }}
     >
       <div>
         <img
           className="mx-auto h-24 w-auto"
-          src="/images/logo.png"
+          src={logo}
           alt="logo"
         />
         <div className="my-2 bg-[#1f1f1f] rounded-lg">
