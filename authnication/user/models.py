@@ -67,3 +67,4 @@ class User(AbstractBaseUser, PermissionsMixin):
             raise ValueError("At least one of email or username must be provided.")
 class UserMapping(models.Model):
     permision_bit = models.BinaryField(null=False)
+    name = models.CharField(max_length=255)

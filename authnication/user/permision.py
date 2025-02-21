@@ -24,8 +24,9 @@ perimision_dict = {
 def andbytes(abytes, bbytes):
 	return bytes([a & b for a, b in zip(abytes[::-1], bbytes[::-1])][::-1])
 
-def orbytes(abytes, bbytes):
-	return bytes([a | b for a, b in zip(abytes[::-1], bbytes[::-1])][::-1])
+def orbytes(a, b):
+	return (int.from_bytes(a,"big") | int.from_bytes(b,"big")).to_bytes(max(len(a),len(b)),"big")
+
 class HasAppPermisionOrReadOnly(BasePermission): # add this class to permision _list 
 	""""
 	  Create cls prop for each app inherting this model by enum value 

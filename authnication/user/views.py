@@ -6,7 +6,7 @@ from .permision import perimision_dict
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .utils import send_message,check_sso_is_valid,genrate_random_digit
-from .models import User
+from .models import User,UserMapping
 from .serilaizers import *
 from rest_framework.response import Response
 from .permision import Permisions
@@ -135,7 +135,7 @@ def reset_password(request):
 @api_view(["POST"])
 def register(request):
 	pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[*^$&]).{8,}$"
-	if (re.find(pattern,request.data.password) is None):
+	if (re.match(pattern,request.data["password"]) is None):
 		return Response({"Error":"Password is weak"},400)
 	registerData =registerSerilizer(data=request.data)
 	if registerData.is_valid():
@@ -185,3 +185,37 @@ def userPatch(request):
 class UserMappinView(ModelViewSet):
 	queryset = UserMapping.objects.all()
 	serializer_class = UserMappingSerilizer
+	lookup_field = "name"
+	@swagger_auto_schema(request_body=openapi.Schema(
+		type=openapi.TYPE_OBJECT, 
+		properties={
+			'name': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+			'permision_bit': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+		},
+	))
+	def create(self, request, *args, **kwargs):
+		permData = self.request.data.get("permision_bit",None)
+		name = self.request.data.get("name",None)
+		permisionNames = []
+		if permData:
+			perms = permData.split(",")
+			base_perms = b"000000000"
+			for p in perms:
+				perm = getattr(Permisions,p)
+				base_perms = orbytes(base_perms,perm.value)
+				print(base_perms,perm.name,perm.value,orbytes(base_perms,perm.value))
+				permisionNames.append(perm.name)
+			print(base_perms)
+			UserMapping.objects.create(permision_bit=base_perms,name=name)
+			return Response({"name":name,"permisions":permisionNames})
+		return Response(status=404)
+	def get_object(self):
+		print(self.queryset)
+		return self.queryset.filter(name=self.kwargs["name"])
+	def destroy(self, request, *args, **kwargs):
+		instance = self.get_object()
+		for i in instance:
+			i.delete()
+		return Response(status=204)
+		
+		
