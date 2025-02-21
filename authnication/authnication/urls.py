@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
+from rest_framework_simplejwt.views import ( TokenRefreshView,TokenObtainPairView)
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import AllowAny
+from rest_framework.routers import DefaultRouter
 from drf_yasg.views import  get_schema_view
 from drf_yasg import openapi
 from user import views as user_view
@@ -20,6 +21,8 @@ schema_view = get_schema_view(
     authentication_classes=[JWTAuthentication],
 )
 
+router = DefaultRouter()
+router.register("api/userPermisions",user_view.UserMappinView)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/permisions/',user_view.get_permistion, name='perrmision'),
@@ -28,5 +31,7 @@ urlpatterns = [
     path('api/reset/',     user_view.reset_password, name='Code'),
     path('api/token/', user_view.get_token, name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path("api/docs",schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui')
-]
+    path("api/docs",schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path("api/register",user_view.register,name="register"),
+    path("api/user",user_view.userPatch),
+]+router.urls

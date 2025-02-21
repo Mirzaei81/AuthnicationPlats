@@ -1,4 +1,5 @@
 from rest_framework.decorators import api_view,permission_classes
+from rest_framework.viewsets import  ModelViewSet
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
 from .permision import perimision_dict
@@ -13,6 +14,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg  import openapi
 import re
 from django.db.utils import IntegrityError
+import traceback
 
 
 @api_view(["GET"])
@@ -129,7 +131,7 @@ def reset_password(request):
 	else:
 		return Response(data={"error":"پسورد ضعیف است"},status=400)
 
-swagger_auto_schema(method="POST",response={"200":UserSerilizer},request_body=registerSerilizer)
+@swagger_auto_schema(method="POST",response={"200":UserSerilizer},request_body=registerSerilizer)
 @api_view(["POST"])
 def register(request):
 	pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[*^$&]).{8,}$"
@@ -144,4 +146,42 @@ def register(request):
 		return Response(status=201)
 	else:
 		return Response(registerData.errors,status=400)
-	
+@swagger_auto_schema(method="PATCH",response={"200":UserSerilizer},request_body=registerSerilizer)
+@swagger_auto_schema(method="DELETE",request_body=openapi.Schema(
+	type=openapi.TYPE_OBJECT, 
+    properties={
+        'username': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+    },
+))
+@api_view(["PATCH","DELETE","GET"])
+def userPatch(request):
+	if(request.method =="PATCH"):
+		user= User.objects.get(username=request.data["username"])
+		if(user):
+			validated_data = registerSerilizer(data=request.data)
+			try:
+				if(validated_data.is_valid()):
+					validated_data.update(user,validated_data.validated_data)
+					return Response(status=201)
+				else:
+					return Response({"error":validated_data.errors},status=400)
+			except Exception as e:
+				print(traceback.format_exc())
+				return Response({"error":e.__str__()} )
+		return  Response(status=400)
+	elif(request.method=="GET"):
+		if(request.user.is_staff ==True):
+			users  =User.objects.all()
+			serializer = UserSerilizer(users,many=True)
+			return Response(serializer.data)
+		return  Response(request.user)
+	elif (request.method=="DELETE"):
+		user= User.objects.get(username=request.data["username"])
+		if(user):
+			user.delete()
+			return   Response(status=201)
+		return  Response(status=400)
+	return Response(status=403)
+class UserMappinView(ModelViewSet):
+	queryset = UserMapping.objects.all()
+	serializer_class = UserMappingSerilizer

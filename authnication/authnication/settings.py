@@ -63,7 +63,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'authnication.wsgi.application'
 
-
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
+}
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 if DEBUG:
