@@ -3,17 +3,29 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 from enum import Enum
 
 class Permisions(Enum):
-	plats_admin = 0b1
-	plats_readonly = 0b10
-	shift_supervisor_tank_admin = 0b100
-	shift_supervisor_tank_readonly = 0b1000
-	shift_supervisor_btb_admin = 0x10000
-	shift_supervisor_btb_readonly= 0x100000
-	shift_supervisor_pb_readonly= 0x1000000
-	shift_supervisor_pb_admin= 0x10000000
-	shift_supervisor_reforming_admin= 0b100000000
-	shift_supervisor_reforming_readonly= 0b1000000000
-	
+	plats_admin = b"1"
+	plats_readonly = b"10"
+	shift_supervisor_tank = b"100"
+	shift_supervisor_btx = b"10000"
+	shift_supervisor_admin = b"1000"
+	shift_supervisor_readonly= b"10000"
+	shift_supervisor_px= b"1000000"
+	shift_supervisor_reforming= b"1000000000"
+perimision_dict = {
+	Permisions.plats_admin :"ادمین پلتس",
+	Permisions.plats_readonly :"پلتس خواندن",
+	Permisions.shift_supervisor_admin :" ادمین کشیک ارشد",
+	Permisions.shift_supervisor_readonly :"کشیک ارشد خواندن",
+	Permisions.shift_supervisor_tank :"کشیک ارشد - تانک ",
+	Permisions.shift_supervisor_btx :"کشیک ارشد - btx",
+	Permisions.shift_supervisor_px:"کشیک ارشد - px",
+	Permisions.shift_supervisor_reforming:"کشیک ارشد - refroming",
+}	
+def andbytes(abytes, bbytes):
+	return bytes([a & b for a, b in zip(abytes[::-1], bbytes[::-1])][::-1])
+
+def orbytes(a, b):
+	return (int.from_bytes(a,"big") | int.from_bytes(b,"big")).to_bytes(max(len(a),len(b)),"big")
 
 class HasAppPermisionOrReadOnly(BasePermission): # add this class to permision _list 
 	""""
@@ -31,9 +43,9 @@ class HasAppPermisionOrReadOnly(BasePermission): # add this class to permision _
 		if not request.user.is_authenticated:
 			return False
 		# Admin or specific permission 
-		if request.user.is_staff or (request.user.permision_bit&self.admin_permission)==self.admin_permission:
+		if request.user.is_staff or andbytes(request.user.permision_bit,self.admin_permission)==self.admin_permission:
 			return True
 		# Read-only access with 'access_readonly' permission
-		if request.method in SAFE_METHODS and (request.user.permision_bit&self.readonly_permission)==self.readonly_permission:
+		if request.method in SAFE_METHODS and andbytes(request.user.permision_bit&self.readonly_permission)==self.readonly_permission:
 			return True
 		return False

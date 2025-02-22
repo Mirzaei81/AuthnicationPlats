@@ -63,19 +63,34 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'authnication.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME':"main" ,
-        "HOST":"127.0.0.1",
-        "USER":os.getenv("PSQL_USER"),
-        "PASSWORD":os.getenv("PSQL_PASSWORD")
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
     }
 }
+# Database
+# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            "NAME":"db.sqlite3"
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME':"main" ,
+            "HOST":"127.0.0.1",
+            "USER":os.getenv("PSQL_USER"),
+            "PASSWORD":os.getenv("PSQL_PASSWORD")
+        }
+    }
 
 
 # Password validation

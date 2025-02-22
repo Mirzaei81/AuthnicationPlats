@@ -3,6 +3,8 @@ import { useForm, useWatch } from "react-hook-form";
 import PasswordValidator from "./PasswordValidator";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import  logo from  "/logo.png"
+import  bg from  "/bg.jpg"
 
 const NewPassword = () => {
   const location = useLocation();
@@ -37,7 +39,7 @@ const NewPassword = () => {
     try {
       setLoading(true);
       setErrorMessage("");
-      const response = await axios.post("/api/reset/", {
+      const response = await axios.post("/api/auth/reset/", {
         ...data,
         phone_number,
       });
@@ -57,10 +59,10 @@ const NewPassword = () => {
   return (
     <div
       className="flex min-h-screen items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: "url('/bg.jpg')" }}
+      style={{ backgroundImage: `url(${bg})` }}
     >
       <div>
-        <img className="mx-auto h-24 w-auto" src="/logo.png" alt="logo" />
+        <img className="mx-auto h-24 w-auto" src={logo} alt="logo" />
         <div className="my-2 pb-1 mx-auto w-96 bg-[#1f1f1f] rounded-lg">
           <h1 className="text-center text-lg font-bold text-gray-100 bg-[#111111] rounded-t-lg p-6">
             Platts

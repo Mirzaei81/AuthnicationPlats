@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import  logo from  "/logo.png"
+import  bg from  "/bg.jpg"
 import axios from "axios";
 
 const Login = () => {
@@ -39,7 +41,7 @@ const Login = () => {
         localStorage.removeItem("savedPassword");
       }
 
-      const response = await axios.post("/api/token/", data);
+      const response = await axios.post("/api/auth/token/", data);
       localStorage.setItem("token", response.data.access);
       localStorage.setItem("plats_admin", response.data.plats_admin);
       localStorage.setItem("plats_readonly", response.data.plats_readonly);
@@ -78,10 +80,10 @@ const Login = () => {
   return (
     <div
       className="flex min-h-screen items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: "url('/bg.jpg')" }}
+      style={{ backgroundImage: `url(${bg})`}}
     >
       <div>
-        <img className="mx-auto h-24 w-auto" src="/logo.png" alt="logo" />
+        <img className="mx-auto h-24 w-auto" src={logo} alt="logo" />
         <div className="my-2 mx-auto w-96 bg-[#1f1f1f] rounded-lg">
           <h1 className="text-center text-lg font-bold text-gray-100 bg-[#111111] rounded-t-lg p-6">
             Platts

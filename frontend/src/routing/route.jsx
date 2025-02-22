@@ -10,4 +10,4 @@ export const router = createBrowserRouter([
   },
   { path: "/forgetpassword", element: <ForgetPassword /> },
   { path: "/newpassword", element: <NewPassword /> },
-]);
+],{basename:import.meta.env.BASE_URL});
