@@ -30,7 +30,7 @@ const Login = () => {
       setErrorMessage("");
       setLoading(true);
 
-      // ذخیره اطلاعات در صورت انتخاب گزینه
+      // Save information if option is selected
       if (rememberMe) {
         localStorage.setItem("savedUsername", data.username);
         localStorage.setItem("savedPassword", data.password);
@@ -40,8 +40,29 @@ const Login = () => {
       }
 
       const response = await axios.post("/api/token/", data);
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("isAdmin", response.data.is_admin);
+      localStorage.setItem("token", response.data.access);
+      localStorage.setItem("plats_admin", response.data.plats_admin);
+      localStorage.setItem("plats_readonly", response.data.plats_readonly);
+      localStorage.setItem(
+        "shift_supervisor_tank",
+        response.data.shift_supervisor_tank
+      );
+      localStorage.setItem(
+        "shift_supervisor_btx",
+        response.data.shift_supervisor_btx
+      );
+      localStorage.setItem(
+        "shift_supervisor_admin",
+        response.data.shift_supervisor_admin
+      );
+      localStorage.setItem(
+        "shift_supervisor_px",
+        response.data.shift_supervisor_px
+      );
+      localStorage.setItem(
+        "shift_supervisor_reforming",
+        response.data.shift_supervisor_reforming
+      );
       navigate("/");
     } catch (error) {
       setErrorMessage(
