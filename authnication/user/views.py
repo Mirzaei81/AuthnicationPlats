@@ -11,6 +11,7 @@ from .serilaizers import *
 from rest_framework.response import Response
 from .permision import Permisions
 from drf_yasg.utils import swagger_auto_schema
+from django.utils.decorators import method_decorator
 from drf_yasg  import openapi
 import re
 from django.db.utils import IntegrityError
@@ -138,14 +139,14 @@ def reset_password(request):
 		return Response(data={"error":"پسورد ضعیف است"},status=400)
 
 @swagger_auto_schema(method="POST",response={"200":UserSerilizer},request_body=registerSerilizer)
-@swagger_auto_schema(method="PATCH",response={"200":UserSerilizer},request_body=registerSerilizer)
+@swagger_auto_schema(method="PUT",response={"200":UserSerilizer},request_body=registerSerilizer)
 @swagger_auto_schema(method="DELETE",request_body=openapi.Schema(
 	type=openapi.TYPE_OBJECT, 
     properties={
         'username': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
     },
 ))
-@api_view(["PATCH","DELETE","GET","POST"])
+@api_view(["PUT","DELETE","GET","POST"])
 @permission_classes([AllowAny])
 def userPatch(request):
 	if(request.method =="POST"):
@@ -161,7 +162,7 @@ def userPatch(request):
 			return Response(status=201)
 		else:
 			return Response(registerData.errors,status=400)
-	if(request.method =="PATCH"):
+	if(request.method =="PUT"):
 		user= User.objects.get(username=request.data["username"])
 		if(user):
 			validated_data = registerSerilizer(data=request.data)
@@ -182,7 +183,7 @@ def userPatch(request):
 			serializer = UserSerilizer(users,many=True)
 			return Response(serializer.data)
 		serializer = UserSerilizer(request.user,many=True)
-		return  Response(request.user)
+		return  Response(serializer.data)
 	elif (request.method=="DELETE"):
 		user= User.objects.get(username=request.data["username"])
 		if(user):
@@ -190,11 +191,16 @@ def userPatch(request):
 			return   Response(status=201)
 		return  Response(status=400)
 	return Response(status=403)
+
+
+
 class UserMappinView(ModelViewSet):
 	queryset = userRoles.objects.all()
 	serializer_class = UserMappingSerilizer
 	lookup_field = "name"
-	@swagger_auto_schema(request_body=openapi.Schema(
+	@swagger_auto_schema(
+		operation_description="PUT /userPermisions/{name}/"	,
+			request_body=openapi.Schema(
 		type=openapi.TYPE_OBJECT, 
 		properties={
 			'name': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
@@ -202,7 +208,7 @@ class UserMappinView(ModelViewSet):
 		},
 	))
 	def update(self, request, *args, **kwargs):
-		permNames  = self.request.data.get("role")
+		permNames  = self.request.data.get("roles")
 		userRole = self.get_object()
 		if(userRole is None):
 			return Response(status=404)

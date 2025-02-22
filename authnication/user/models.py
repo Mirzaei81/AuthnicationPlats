@@ -43,6 +43,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom User Model for authentication management through email and/or username
     """
+    firstname =models.CharField(max_length=255) 
+    lastname = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, unique=True)
     username = models.CharField(max_length=150, unique=True)
     is_superuser = models.BooleanField(default=False)

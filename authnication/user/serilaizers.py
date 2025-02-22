@@ -27,6 +27,8 @@ class is_validSerializer(serializers.BaseSerializer):
 	code = serializers.CharField()
 
 class  registerSerilizer(serializers.Serializer):
+	firstname =serializers.CharField(allow_blank=True) 
+	lastname = serializers.CharField(allow_blank=True)
 	username =serializers.CharField(allow_blank=True)
 	phone_number = serializers.CharField(allow_blank=True)
 	email = serializers.EmailField(allow_blank=True)	
@@ -46,11 +48,15 @@ class  registerSerilizer(serializers.Serializer):
 	def create(self, validated_data):
 		permision = userRoles.objects.filter(name=validated_data.get("roleName",None)).first().userRole
 		if validated_data["is_superuser"]:
-			return User.objects.create_superuser(username=validated_data["username"],password=validated_data["password"]
+			return User.objects.create_superuser(username=validated_data["username"],password=validated_data["password"],
+										firstname=validated_data["firstname"],
+										lastname=validated_data["lastname"]
 										,email=validated_data["email"],phone_number=validated_data["phone_number"],
 										role=permision)
 		else:
-			return User.objects.create_user(username=validated_data["username"],password=validated_data["password"]
+			return User.objects.create_user(username=validated_data["username"],password=validated_data["password"],
+										firstname=validated_data["firstname"],
+										lastname=validated_data["lastname"]
 										,email=validated_data["email"],phone_number=validated_data["phone_number"],
 										role=permision)
 class UserSerilizer(serializers.ModelSerializer):
