@@ -70,6 +70,6 @@ class UserSerilizer(serializers.ModelSerializer):
 			return ",".join(permisions_list)
 		return ""
 	class Meta:
-		fields = ["email","username","is_superuser","is_staff","is_active","is_verified","phone_number","created_date","updated_date","role"]
+		fields = ["email","firstname","lastname","username","is_superuser","is_staff","is_active","is_verified","phone_number","created_date","updated_date","role"]
 		model = User
 
