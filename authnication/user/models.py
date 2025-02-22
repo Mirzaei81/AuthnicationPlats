@@ -53,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone_number =models.CharField(max_length=255)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    permision_bit = models.BinaryField(null=True)
+    role = models.BinaryField(null=True)
     objects = UserManager()
     USERNAME_FIELD = "username"  # Use username for authentication
     REQUIRED_FIELDS = ['email',"phone_number"]  # Only eamil is required for extra fields
@@ -65,6 +65,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         if not self.email and not self.username:
             raise ValueError("At least one of email or username must be provided.")
-class UserMapping(models.Model):
-    permision_bit = models.BinaryField(null=False)
+class userRoles(models.Model):
+    userRole = models.BinaryField(null=False)
     name = models.CharField(max_length=255)

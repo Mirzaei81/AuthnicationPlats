@@ -6,7 +6,7 @@ from .permision import perimision_dict
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .utils import send_message,check_sso_is_valid,genrate_random_digit
-from .models import User,UserMapping
+from .models import User,userRoles
 from .serilaizers import *
 from rest_framework.response import Response
 from .permision import Permisions
@@ -23,7 +23,7 @@ def get_permistion(request):
 	return Response({"permision":[{m.name:v} for m,v in perimision_dict.items()]})
 
 @swagger_auto_schema(method="POST",
-	tags=["ResetPassword"],
+	tags=["login"],
 	response={"200":int},request_body=openapi.Schema(
 	type=openapi.TYPE_OBJECT, 
     properties={
@@ -45,19 +45,25 @@ def get_token(reqeuest):
 	def andbytes(abytes, bbytes):
 		return bytes([a & b for a, b in zip(abytes[::-1], bbytes[::-1])][::-1])
 	for p in Permisions:
-		if andbytes(p.value,user.permision_bit) == p.value:
+		if user.role and andbytes(p.value,user.role) == p.value:
 			permission[p.name] = True
 		else:
 			permission[p.name] = False
-	print(permission)
 	permission.update({
 		'refresh': str(refresh),
-        'access': str(refresh.access_token),
-	}
-	)
-
+		'access': str(refresh.access_token),
+	})
 	return Response(permission)
 	
+@swagger_auto_schema(method="POST",
+	tags=["ResetPassword"],
+	response={"200":int},request_body=openapi.Schema(
+	type=openapi.TYPE_OBJECT, 
+    properties={
+        'email': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+        'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
+    }
+	))
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def create_code(request):
@@ -132,20 +138,6 @@ def reset_password(request):
 		return Response(data={"error":"پسورد ضعیف است"},status=400)
 
 @swagger_auto_schema(method="POST",response={"200":UserSerilizer},request_body=registerSerilizer)
-@api_view(["POST"])
-def register(request):
-	pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[*^$&]).{8,}$"
-	if (re.match(pattern,request.data["password"]) is None):
-		return Response({"Error":"Password is weak"},400)
-	registerData =registerSerilizer(data=request.data)
-	if registerData.is_valid():
-		try:
-			registerData.save()
-		except IntegrityError:
-			return Response({"username":"user with this username aleady exist"})
-		return Response(status=201)
-	else:
-		return Response(registerData.errors,status=400)
 @swagger_auto_schema(method="PATCH",response={"200":UserSerilizer},request_body=registerSerilizer)
 @swagger_auto_schema(method="DELETE",request_body=openapi.Schema(
 	type=openapi.TYPE_OBJECT, 
@@ -153,8 +145,22 @@ def register(request):
         'username': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
     },
 ))
-@api_view(["PATCH","DELETE","GET"])
+@api_view(["PATCH","DELETE","GET","POST"])
+@permission_classes([AllowAny])
 def userPatch(request):
+	if(request.method =="POST"):
+		pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#!*^$@&]).{8,}$"
+		if (re.match(pattern,request.data["password"]) is None):
+			return Response({"Error":"Password is weak"},400)
+		registerData =registerSerilizer(data=request.data)
+		if registerData.is_valid():
+			try:
+				registerData.save()
+			except IntegrityError:
+				return Response({"username":"user with this username aleady exist"})
+			return Response(status=201)
+		else:
+			return Response(registerData.errors,status=400)
 	if(request.method =="PATCH"):
 		user= User.objects.get(username=request.data["username"])
 		if(user):
@@ -170,10 +176,12 @@ def userPatch(request):
 				return Response({"error":e.__str__()} )
 		return  Response(status=400)
 	elif(request.method=="GET"):
+		users = request.user
 		if(request.user.is_staff ==True):
 			users  =User.objects.all()
 			serializer = UserSerilizer(users,many=True)
 			return Response(serializer.data)
+		serializer = UserSerilizer(request.user,many=True)
 		return  Response(request.user)
 	elif (request.method=="DELETE"):
 		user= User.objects.get(username=request.data["username"])
@@ -183,35 +191,57 @@ def userPatch(request):
 		return  Response(status=400)
 	return Response(status=403)
 class UserMappinView(ModelViewSet):
-	queryset = UserMapping.objects.all()
+	queryset = userRoles.objects.all()
 	serializer_class = UserMappingSerilizer
 	lookup_field = "name"
 	@swagger_auto_schema(request_body=openapi.Schema(
 		type=openapi.TYPE_OBJECT, 
 		properties={
 			'name': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
-			'permision_bit': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+			'roles': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+		},
+	))
+	def update(self, request, *args, **kwargs):
+		permNames  = self.request.data.get("role")
+		userRole = self.get_object()
+		if(userRole is None):
+			return Response(status=404)
+		userRole.name = self.request.data.get("name")
+		permisionNames=[]
+		if permNames:
+			perms = permNames.split(",")
+			base_perms = b"000000000"
+			for p in perms:
+				perm = getattr(Permisions,p)
+				base_perms = orbytes(base_perms,perm.value)
+				permisionNames.append(perm.name)
+			userRole.userRole = base_perms
+		userRole.name = self.request.data.get("name")
+		userRole.save()
+	@swagger_auto_schema(request_body=openapi.Schema(
+		type=openapi.TYPE_OBJECT, 
+		properties={
+			'name': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+			'roles': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
 		},
 	))
 	def create(self, request, *args, **kwargs):
-		permData = self.request.data.get("permision_bit",None)
+		permData = self.request.data.get("roles",None)
 		name = self.request.data.get("name",None)
 		permisionNames = []
-		if permData:
+		if permData and len(permData)!=0:
 			perms = permData.split(",")
 			base_perms = b"000000000"
 			for p in perms:
 				perm = getattr(Permisions,p)
 				base_perms = orbytes(base_perms,perm.value)
-				print(base_perms,perm.name,perm.value,orbytes(base_perms,perm.value))
 				permisionNames.append(perm.name)
-			print(base_perms)
-			UserMapping.objects.create(permision_bit=base_perms,name=name)
+			userRoles.objects.create(userRole=base_perms,name=name)
 			return Response({"name":name,"permisions":permisionNames})
-		return Response(status=404)
+		userRoles.objects.create(userRole=b"000000000",name=name)
+		return Response({"name":name,"permisions":""})
 	def get_object(self):
-		print(self.queryset)
-		return self.queryset.filter(name=self.kwargs["name"])
+		return self.queryset.filter(name=self.kwargs["name"]).first()
 	def destroy(self, request, *args, **kwargs):
 		instance = self.get_object()
 		for i in instance:

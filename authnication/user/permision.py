@@ -43,9 +43,9 @@ class HasAppPermisionOrReadOnly(BasePermission): # add this class to permision _
 		if not request.user.is_authenticated:
 			return False
 		# Admin or specific permission 
-		if request.user.is_staff or andbytes(request.user.permision_bit,self.admin_permission)==self.admin_permission:
+		if request.user.is_staff or andbytes(request.user.role,self.admin_permission)==self.admin_permission:
 			return True
 		# Read-only access with 'access_readonly' permission
-		if request.method in SAFE_METHODS and andbytes(request.user.permision_bit&self.readonly_permission)==self.readonly_permission:
+		if request.method in SAFE_METHODS and andbytes(request.user.role&self.readonly_permission)==self.readonly_permission:
 			return True
 		return False
