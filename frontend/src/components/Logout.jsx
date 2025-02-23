@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import logo from "/logo.png"
 import bg from "/bg.jpg"
 
-const Logout = () => {
+export const Logout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     localStorage.removeItem("token");
 
     const timeout = setTimeout(() => {
-      navigate("/login");
+      navigate("/");
     }, 3000);
 
     return () => clearTimeout(timeout);
