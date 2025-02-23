@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import PasswordValidator from "./PasswordValidator";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
-import  logo from  "/logo.png"
-import  bg from  "/bg.jpg"
+import logo from "/logo.png";
+import bg from "/bg.jpg";
+import { resetPassword } from "../utils/authRequests";
 
 const NewPassword = () => {
   const location = useLocation();
@@ -39,18 +39,11 @@ const NewPassword = () => {
     try {
       setLoading(true);
       setErrorMessage("");
-      const response = await axios.post("/api/auth/reset/", {
-        ...data,
-        phone_number,
-      });
+      await resetPassword(phone_number, data.password, data.confirmation);
 
-      navigate("/login");
+      navigate("/");
     } catch (error) {
-      if (error.response?.data?.error) {
-        setErrorMessage(error.response.data.error);
-      } else {
-        setErrorMessage("خطایی رخ داده است. لطفاً دوباره امتحان کنید.");
-      }
+      setErrorMessage(error.message);
     } finally {
       setLoading(false);
     }
@@ -106,7 +99,7 @@ const NewPassword = () => {
               <button
                 disabled={loading}
                 type="submit"
-                className="flex items-center gap-2 w-[300px] mb-6 mx-auto justify-center rounded-md bg-sky-600 hover:bg-sky-700 px-3 py-1.5 text-sm text-white"
+                className="cursor-pointer flex items-center gap-2 w-[300px] mb-6 mx-auto justify-center rounded-md bg-sky-600 hover:bg-sky-700 px-3 py-1.5 text-sm text-white"
               >
                 ثبت رمز عبور جدید
                 {loading && (

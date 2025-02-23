@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import  logo from  "/logo.png"
-import  bg from  "/bg.jpg"
-import axios from "axios";
-
+import logo from "/logo.png";
+import bg from "/bg.jpg";
+import { loginRequest } from "../utils/authRequests";
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [rememberMe, setRememberMe] = useState(false); // وضعیت برای ذخیره رمز عبور
+  const [rememberMe, setRememberMe] = useState(false);
   const {
     register,
     handleSubmit,
@@ -41,8 +40,9 @@ const Login = () => {
         localStorage.removeItem("savedPassword");
       }
 
-      const response = await axios.post("/api/auth/token/", data);
+      const response = await loginRequest(data);
       localStorage.setItem("token", response.data.access);
+      localStorage.setItem("refresh", response.data.refresh);
       localStorage.setItem("plats_admin", response.data.plats_admin);
       localStorage.setItem("plats_readonly", response.data.plats_readonly);
       localStorage.setItem(
@@ -65,7 +65,7 @@ const Login = () => {
         "shift_supervisor_reforming",
         response.data.shift_supervisor_reforming
       );
-      navigate("/");
+      navigate("/users");
     } catch (error) {
       setErrorMessage(
         error.response?.status === 401
@@ -80,7 +80,7 @@ const Login = () => {
   return (
     <div
       className="flex min-h-screen items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: `url(${bg})`}}
+      style={{ backgroundImage: `url(${bg})` }}
     >
       <div>
         <img className="mx-auto h-24 w-auto" src={logo} alt="logo" />
@@ -115,7 +115,7 @@ const Login = () => {
               />
             </div>
 
-            <div className="flex items-center justify-center mt-6">
+            <div className="cursor-pointer flex items-center justify-center mt-6">
               <label
                 htmlFor="rememberMe"
                 className="ml-2 text-sm text-gray-300"
@@ -135,7 +135,7 @@ const Login = () => {
               <button
                 disabled={loading}
                 type="submit"
-                className="flex items-center gap-2 w-full my-6 justify-center rounded-md bg-sky-600 hover:bg-sky-700 px-3 py-1.5 text-sm text-white"
+                className="cursor-pointer flex items-center gap-2 w-full my-6 justify-center rounded-md bg-sky-600 hover:bg-sky-700 px-3 py-1.5 text-sm text-white"
               >
                 ورود
                 {loading && (

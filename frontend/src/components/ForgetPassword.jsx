@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import logo from "/logo.png"
-import bg from "/bg.jpg"
+import { requestOtp, verifyOtp } from "../utils/authRequests";
+import logo from "/logo.png";
+import bg from "/bg.jpg";
 
 const ForgetPassword = () => {
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ const ForgetPassword = () => {
     handleSubmit,
     formState: { errors },
     getValues,
-    reset
+    reset,
   } = useForm();
   const navigate = useNavigate();
 
@@ -31,12 +31,13 @@ const ForgetPassword = () => {
     try {
       setLoading(true);
       setButtonText("در حال ارسال کد...");
+
       if (method === "sms") {
-        await axios.post("/api/auth/code/", { phone_number });
+        await requestOtp("sms", phone_number);
+      } else {
+        await requestOtp("email", email);
       }
-      else {
-        await axios.post("/api/auth/code/", { email });
-      }
+
       setOtpFieldOpen(true);
       if (!timer) startTimer();
     } catch (error) {
@@ -73,11 +74,11 @@ const ForgetPassword = () => {
       setLoading(true);
       setOtpError("");
 
-      const response = await axios.post("/api/auth/valid/", {
-        [method === "sms" ? "phone_number" : "email"]:
-          method === "sms" ? data.phone_number : data.email,
-        code: data.otp,
-      });
+      const response = await verifyOtp(
+        method,
+        method === "sms" ? data.phone_number : data.email,
+        data.otp
+      );
 
       if (response.status === 201) {
         navigate("/newpassword", {
@@ -93,7 +94,7 @@ const ForgetPassword = () => {
       } else {
         setOtpError("خطایی رخ داده است. لطفاً دوباره امتحان کنید.");
       }
-      reset({ otp: "" }); 
+      reset({ otp: "" });
       setOtpFieldOpen(false);
       setButtonText("دریافت مجدد کد تایید");
       clearInterval(timer);
@@ -109,11 +110,7 @@ const ForgetPassword = () => {
       style={{ backgroundImage: `url(${bg})` }}
     >
       <div>
-        <img
-          className="mx-auto h-24 w-auto"
-          src={logo}
-          alt="logo"
-        />
+        <img className="mx-auto h-24 w-auto" src={logo} alt="logo" />
         <div className="my-2 mx-auto w-96 bg-[#1f1f1f] rounded-lg">
           <h1 className="text-center text-lg font-bold text-gray-100 bg-[#111111] rounded-t-lg p-6">
             Platts
@@ -171,7 +168,7 @@ const ForgetPassword = () => {
               <button
                 type="button"
                 onClick={handleOtpClick}
-                className={`text-white text-sm ${
+                className={`cursor-pointer text-white text-sm ${
                   buttonText !== "در حال ارسال کد تایید..." && "underline"
                 }`}
                 disabled={timer !== null} // Disable button if timer is active
@@ -203,7 +200,7 @@ const ForgetPassword = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center gap-2 w-full my-6 justify-center rounded-md bg-sky-600 hover:bg-sky-700 px-3 py-1.5 text-sm text-white"
+                className="cursor-pointer flex items-center gap-2 w-full my-6 justify-center rounded-md bg-sky-600 hover:bg-sky-700 px-3 py-1.5 text-sm text-white"
               >
                 مرحله بعد
               </button>
