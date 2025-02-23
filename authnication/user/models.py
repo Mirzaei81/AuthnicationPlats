@@ -33,11 +33,12 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
         extra_fields.setdefault("is_verified", True)
+ 
 
         if not email:
             raise ValueError("Superuser must have an Email.")
         
-        return self.create_user(email=email, username=username, password=password, **extra_fields)
+        return self.create_user(email=email, username=username, password=password,role=b"111111111", **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
     """

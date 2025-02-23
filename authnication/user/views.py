@@ -11,7 +11,6 @@ from .serilaizers import *
 from rest_framework.response import Response
 from .permision import Permisions
 from drf_yasg.utils import swagger_auto_schema
-from django.utils.decorators import method_decorator
 from drf_yasg  import openapi
 import re
 from django.db.utils import IntegrityError
@@ -119,7 +118,6 @@ def is_valid(request):
         'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
     },
 ))
-
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def reset_password(request):
@@ -178,6 +176,8 @@ def userPatch(request):
 		return  Response(status=400)
 	elif(request.method=="GET"):
 		users = request.user
+		if users.is_anonymous:
+			return Response(status=404)
 		if(request.user.is_staff ==True):
 			users  =User.objects.all()
 			serializer = UserSerilizer(users,many=True)
@@ -224,6 +224,7 @@ class UserMappinView(ModelViewSet):
 			userRole.userRole = base_perms
 		userRole.name = self.request.data.get("name")
 		userRole.save()
+		return Response(status=201)
 	@swagger_auto_schema(request_body=openapi.Schema(
 		type=openapi.TYPE_OBJECT, 
 		properties={
@@ -249,9 +250,7 @@ class UserMappinView(ModelViewSet):
 	def get_object(self):
 		return self.queryset.filter(name=self.kwargs["name"]).first()
 	def destroy(self, request, *args, **kwargs):
-		instance = self.get_object()
-		for i in instance:
-			i.delete()
+		self.get_object().delete()
 		return Response(status=204)
 		
 		

@@ -62,13 +62,8 @@ class  registerSerilizer(serializers.Serializer):
 class UserSerilizer(serializers.ModelSerializer):
 	role = serializers.SerializerMethodField()
 	def get_role(self,obj):
-		permisions_list = []
-		if(obj.role):
-			for perm in Permisions:
-					if andbytes(perm.value,obj.role)==perm.value:
-						permisions_list.append(perm.name)
-			return ",".join(permisions_list)
-		return ""
+		ur = get_object_or_404(userRoles,userRole=obj.role)
+		return  ur.name
 	class Meta:
 		fields = ["email","firstname","lastname","username","is_superuser","is_staff","is_active","is_verified","phone_number","created_date","updated_date","role"]
 		model = User

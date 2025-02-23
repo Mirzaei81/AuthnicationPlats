@@ -16,7 +16,18 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
+    run_seed()
 
 
 if __name__ == '__main__':
     main()
+
+def run_seed(self):
+    """ Seed database based on mode
+
+    :param mode: refresh / clear 
+    :return:
+    """
+    # Creating 15 addresses
+    from user.models import userRoles
+    userRoles.objects.create("ananymous",b"00000000")
