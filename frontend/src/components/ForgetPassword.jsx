@@ -32,7 +32,6 @@ const ForgetPassword = () => {
       setLoading(true);
       setButtonText("در حال ارسال کد...");
 
-      // استفاده از تابع requestOtp به جای axios مستقیم
       if (method === "sms") {
         await requestOtp("sms", phone_number);
       } else {
@@ -75,7 +74,6 @@ const ForgetPassword = () => {
       setLoading(true);
       setOtpError("");
 
-      // استفاده از تابع verifyOtp به جای axios مستقیم
       const response = await verifyOtp(
         method,
         method === "sms" ? data.phone_number : data.email,

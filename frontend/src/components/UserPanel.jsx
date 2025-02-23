@@ -15,7 +15,7 @@ export const UserPanel = () => {
         const fetchedData = await fetchUserPermissions();
         setData(fetchedData);
       } catch (error) {
-        if (error.message === "No token found") {
+        if (error.response?.status === 401) {
           navigate("/");
         } else {
           alert("خطای دریافت داده از سرور");

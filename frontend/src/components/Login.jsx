@@ -7,7 +7,7 @@ import { loginRequest } from "../utils/authRequests";
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [rememberMe, setRememberMe] = useState(false); // وضعیت برای ذخیره رمز عبور
+  const [rememberMe, setRememberMe] = useState(false);
   const {
     register,
     handleSubmit,
@@ -42,6 +42,7 @@ const Login = () => {
 
       const response = await loginRequest(data);
       localStorage.setItem("token", response.data.access);
+      localStorage.setItem("refresh", response.data.refresh);
       localStorage.setItem("plats_admin", response.data.plats_admin);
       localStorage.setItem("plats_readonly", response.data.plats_readonly);
       localStorage.setItem(

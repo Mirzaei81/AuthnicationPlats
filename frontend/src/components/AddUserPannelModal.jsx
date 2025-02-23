@@ -17,7 +17,7 @@ const AddUserPannelModal = ({ onClose, onAddSuccess }) => {
         const { plats, shift } = await fetchPermissions();
         setGroupedPermissions({ plats, shift });
       } catch (error) {
-        if (error.message === "No token found") {
+        if (error.response?.status === 401) {
           navigate("/");
         } else {
           alert("خطای دریافت داده‌ها از سرور");
@@ -65,7 +65,7 @@ const AddUserPannelModal = ({ onClose, onAddSuccess }) => {
       onAddSuccess();
       onClose();
     } catch (error) {
-      if (error.message === "No token found") {
+      if (error.response?.status === 401) {
         navigate("/");
       } else {
         console.error("Error creating role:", error);

@@ -27,7 +27,7 @@ const AddUserInfoModal = ({ onClose, onAddSuccess }) => {
         const fetchedData = await fetchRoles();
         setRoles(fetchedData);
       } catch (error) {
-        if (error.message === "No token found") {
+        if (error.response?.status === 401) {
           navigate("/");
         } else {
           alert("خطای دریافت داده از سرور");
@@ -65,7 +65,7 @@ const AddUserInfoModal = ({ onClose, onAddSuccess }) => {
       onAddSuccess();
       onClose();
     } catch (error) {
-      if (error.message === "No token found") {
+      if (error.response?.status === 401) {
         navigate("/");
       } else {
         console.error("Error creating user:", error);

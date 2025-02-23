@@ -11,7 +11,7 @@ const DeleteUserPannelModal = ({ onClose, selectedRow, onDeleteSuccess }) => {
       onDeleteSuccess();
       onClose();
     } catch (error) {
-      if (error.message === "No token found") {
+      if (error.response?.status === 401) {
         navigate("/");
       } else {
         console.error("Error deleting role:", error);
