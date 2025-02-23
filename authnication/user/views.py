@@ -86,17 +86,19 @@ def create_code(request):
 	tags=["ResetPassword"],
 	response={"200":int},request_body=openapi.Schema(
 	type=openapi.TYPE_OBJECT, 
+	required=[],
     properties={
         'code': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
-        'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='09111111111'),
+        'phone_number':openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+		'email': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
     },
 ))
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def is_valid(request):
 	code = request.data.get("code",None)
-	phone_number= request.data("phone_number",None)
-	mail= request.data["mail"]
+	phone_number= request.data.get("phone_number",None)
+	mail= request.data.get("mail",None)
 	try:
 		if(mail):
 			check_sso_is_valid(mail,code)
@@ -104,9 +106,9 @@ def is_valid(request):
 		check_sso_is_valid(phone_number,code)
 		return   Response(status=201)
 	except	ValueError as e:
-		return Response(data={"error":e.__str__()},status=400)
+		return Response(data={"error":"کاربر یافت نشد"},status=404)
 	except KeyError as e:
-		return Response(data={"error":e.__str__()},status=400)
+		return Response(data={"error":"ایمیل  یا شماره واردی اشتباه ثبت نشده"},status=400)
 
 @swagger_auto_schema(method="POST",
 	tags=["ResetPassword"],

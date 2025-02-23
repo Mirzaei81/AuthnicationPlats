@@ -31,3 +31,4 @@ def run_seed(self):
     # Creating 15 addresses
     from user.models import userRoles
     userRoles.objects.create("ananymous",b"00000000")
+    userRoles.objects.create("Admin",b"111111111")
