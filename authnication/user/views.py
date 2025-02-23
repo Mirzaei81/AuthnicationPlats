@@ -132,6 +132,7 @@ def reset_password(request):
 			return  Response(status=500)
 		if user.reset_password:
 			user.set_password(passoword)
+			user.reset_password = False
 			user.save()
 			return Response(status=201)
 		return Response(data={"error":"کاربر نمیتواند رمز عبور رو عوض  کند"},status=400)

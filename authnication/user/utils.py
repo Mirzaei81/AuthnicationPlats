@@ -32,5 +32,7 @@ def check_sso_is_valid(phone_number:str,sso:str):
 	if phone_number in phoneNumber_singelton:
 		if sso != phoneNumber_singelton[phone_number]:
 			raise ValueError("کد پیامکی وارد شده اشتباه است!")
+		user.reset_password = True
+		user.save()
 	else :
 		raise KeyError("شماره همراه واردی اشتباه ثبت شده است!")
