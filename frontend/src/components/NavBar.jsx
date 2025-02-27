@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { arrowIcon, offIcon, userIcon1, userIcon2 } from "../assets/icons";
+import Cookies from "js-cookie";
 
 const NavBar = () => {
-  const user = localStorage.getItem("token");
+  const user = Cookies.get("token");
   return (
     <div className="flex justify-between bg-gray-300">
       <nav className="flex w-full text-sm">

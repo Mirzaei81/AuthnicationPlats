@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import logo from "/logo.png";
 import bg from "/bg.jpg";
 import { loginRequest } from "../utils/authRequests";
+import Cookies from "js-cookie";
+import { DOMAIN } from "../constants/domain";
+
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -41,29 +44,82 @@ const Login = () => {
       }
 
       const response = await loginRequest(data);
-      localStorage.setItem("token", response.data.access);
-      localStorage.setItem("refresh", response.data.refresh);
-      localStorage.setItem("plats_admin", response.data.plats_admin);
-      localStorage.setItem("plats_readonly", response.data.plats_readonly);
-      localStorage.setItem(
+      Cookies.set("token", response.data.access, {
+        domain: DOMAIN, // Domain for access between ports
+        path: "/", // All paths are accessible
+        expires: 7, // 7 days validity
+        sameSite: "None",
+        secure: true,
+      });
+      Cookies.set("refresh", response.data.refresh, {
+        domain: DOMAIN,
+        path: "/",
+        expires: 7,
+        sameSite: "None",
+        secure: true,
+      });
+
+      // Store tokens and roles in cookies
+      Cookies.set("plats_admin", response.data.plats_admin, {
+        domain: DOMAIN,
+        path: "/",
+        expires: 7,
+        sameSite: "None",
+        secure: true,
+      });
+      Cookies.set("plats_readonly", response.data.plats_readonly, {
+        domain: DOMAIN,
+        path: "/",
+        expires: 7,
+        sameSite: "None",
+        secure: true,
+      });
+      Cookies.set(
         "shift_supervisor_tank",
-        response.data.shift_supervisor_tank
+        response.data.shift_supervisor_tank,
+        {
+          domain: DOMAIN,
+          path: "/",
+          expires: 7,
+          sameSite: "None",
+          secure: true,
+        }
       );
-      localStorage.setItem(
-        "shift_supervisor_btx",
-        response.data.shift_supervisor_btx
-      );
-      localStorage.setItem(
+      Cookies.set("shift_supervisor_btx", response.data.shift_supervisor_btx, {
+        domain: DOMAIN,
+        path: "/",
+        expires: 7,
+        sameSite: "None",
+        secure: true,
+      });
+      Cookies.set(
         "shift_supervisor_admin",
-        response.data.shift_supervisor_admin
+        response.data.shift_supervisor_admin,
+        {
+          domain: DOMAIN,
+          path: "/",
+          expires: 7,
+          sameSite: "None",
+          secure: true,
+        }
       );
-      localStorage.setItem(
-        "shift_supervisor_px",
-        response.data.shift_supervisor_px
-      );
-      localStorage.setItem(
+      Cookies.set("shift_supervisor_px", response.data.shift_supervisor_px, {
+        domain: DOMAIN,
+        path: "/",
+        expires: 7,
+        sameSite: "None",
+        secure: true,
+      });
+      Cookies.set(
         "shift_supervisor_reforming",
-        response.data.shift_supervisor_reforming
+        response.data.shift_supervisor_reforming,
+        {
+          domain: DOMAIN,
+          path: "/",
+          expires: 7,
+          sameSite: "None",
+          secure: true,
+        }
       );
       navigate("/users");
     } catch (error) {

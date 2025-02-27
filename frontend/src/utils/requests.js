@@ -1,7 +1,9 @@
 import axios from "axios";
+import Cookies from "js-cookie";
+import { DOMAIN } from "../constants/domain";
 
 const refreshToken = async () => {
-  const refresh = localStorage.getItem("refresh");
+  const refresh = Cookies.get("refresh");
   if (!refresh) {
     throw {
       response: { status: 401, data: { message: "No refresh token found" } },
@@ -9,13 +11,19 @@ const refreshToken = async () => {
   }
 
   const response = await axios.post("/login/refresh/", { refresh });
-  localStorage.setItem("token", response.data.access);
+  Cookies.set("token", response.data.access, {
+    domain: DOMAIN,
+    path: "/",
+    expires: 7,
+    sameSite: "None",
+    secure: true,
+  });
   return response.data.access;
 };
 
 export const fetchUserPermissions = async () => {
   try {
-    let token = localStorage.getItem("token");
+    let token = Cookies.get("token");
     if (!token) {
       token = await refreshToken();
     }
@@ -44,7 +52,7 @@ export const fetchUserPermissions = async () => {
 
 export const fetchUsersInformations = async () => {
   try {
-    let token = localStorage.getItem("token");
+    let token = Cookies.get("token");
     if (!token) {
       token = await refreshToken();
     }
@@ -72,7 +80,7 @@ export const fetchUsersInformations = async () => {
 
 export const fetchRoles = async () => {
   try {
-    let token = localStorage.getItem("token");
+    let token = Cookies.get("token");
     if (!token) {
       token = await refreshToken();
     }
@@ -100,7 +108,7 @@ export const fetchRoles = async () => {
 
 export const fetchPermissions = async () => {
   try {
-    let token = localStorage.getItem("token");
+    let token = Cookies.get("token");
     if (!token) {
       token = await refreshToken();
     }
@@ -150,7 +158,7 @@ export const fetchPermissions = async () => {
 
 export const createUser = async (userData) => {
   try {
-    let token = localStorage.getItem("token");
+    let token = Cookies.get("token");
     if (!token) {
       token = await refreshToken();
     }
@@ -180,7 +188,7 @@ export const createUser = async (userData) => {
 
 export const createRole = async (roleData) => {
   try {
-    let token = localStorage.getItem("token");
+    let token = Cookies.get("token");
     if (!token) {
       token = await refreshToken();
     }
@@ -212,7 +220,7 @@ export const createRole = async (roleData) => {
 
 export const editUser = async (userData) => {
   try {
-    let token = localStorage.getItem("token");
+    let token = Cookies.get("token");
     if (!token) {
       token = await refreshToken();
     }
@@ -242,7 +250,7 @@ export const editUser = async (userData) => {
 
 export const editRole = async (requestBody, roleName) => {
   try {
-    let token = localStorage.getItem("token");
+    let token = Cookies.get("token");
     if (!token) {
       token = await refreshToken();
     }
@@ -282,7 +290,7 @@ export const editRole = async (requestBody, roleName) => {
 
 export const deleteUser = async (username) => {
   try {
-    let token = localStorage.getItem("token");
+    let token = Cookies.get("token");
     if (!token) {
       token = await refreshToken();
     }
@@ -316,7 +324,7 @@ export const deleteUser = async (username) => {
 
 export const deleteRole = async (roleName) => {
   try {
-    let token = localStorage.getItem("token");
+    let token = Cookies.get("token");
     if (!token) {
       token = await refreshToken();
     }

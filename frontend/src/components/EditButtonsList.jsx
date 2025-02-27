@@ -16,6 +16,7 @@ import DeleteUserInfoModal from "./DeleteUserInfoModal";
 import DeleteUserPannelModal from "./DeleteUserPannelModal";
 import EditUserInfoModal from "./EditUserInfoModal";
 import EditUserPannelModal from "./EditUserPannelModal";
+import Cookies from "js-cookie";
 
 const EditButtonsList = ({ selectedRow, data }) => {
   const location = useLocation();
@@ -99,7 +100,7 @@ const EditButtonsList = ({ selectedRow, data }) => {
         {pdfIcon} چاپ
       </button>
 
-      {localStorage.getItem("plats_admin") === "true" && (
+      {Cookies.get("plats_admin") === "true" && (
         <>
           <button
             className="cursor-pointer"
