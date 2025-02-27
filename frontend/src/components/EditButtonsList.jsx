@@ -20,7 +20,6 @@ import Cookies from "js-cookie";
 
 const EditButtonsList = ({ selectedRow, data }) => {
   const location = useLocation();
-  console.log(location);
   const [modals, setModals] = useState({});
 
   // Map paths to modals and titles
@@ -59,7 +58,6 @@ const EditButtonsList = ({ selectedRow, data }) => {
   };
 
   const currentRoute = routeConfig[location.pathname] || {};
-  console.log(currentRoute);
 
   // Handle modal visibility
   const toggleModal = (modalType) => {

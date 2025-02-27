@@ -55,9 +55,6 @@ const EditUserPannelModal = ({ onClose, onEditSuccess, selectedRow }) => {
       roles: rolesString,
     };
 
-    console.log(requestBody);
-    console.log(requestBody, roleName);
-
     try {
       const response = await editRole(requestBody, roleName);
       onEditSuccess();
