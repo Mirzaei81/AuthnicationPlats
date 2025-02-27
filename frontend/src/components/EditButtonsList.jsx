@@ -9,7 +9,7 @@ import {
   addIcon,
   deleteIcon,
   editIcon,
-} from "../contexts/icons";
+} from "../assets/icons";
 import AddUserInfoModal from "./AddUserInfoModal";
 import AddUserPannelModal from "./AddUserPannelModal";
 import DeleteUserInfoModal from "./DeleteUserInfoModal";
