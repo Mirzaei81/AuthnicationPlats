@@ -75,6 +75,8 @@ const AddUserPannelModal = ({ onClose, onAddSuccess }) => {
     }
   };
 
+  console.log(groupedPermissions);
+
   return (
     <div className="fixed inset-0 bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-50">
       <div className="bg-slate-200 p-6 rounded-lg w-96">
@@ -95,38 +97,45 @@ const AddUserPannelModal = ({ onClose, onAddSuccess }) => {
             <h3 className="font-semibold text-sm mb-2">سطوح دسترسی</h3>
             <div className="pr-4 text-xs">
               {/* Platts */}
-              <span>مجله Platts</span>
-              {groupedPermissions.plats.map((perm) => {
-                const key = Object.keys(perm)[0];
-                return (
-                  <label key={key} className="flex items-center gap-1 ps-4">
-                    <input
-                      type="checkbox"
-                      name={key}
-                      checked={accessLevels[key] || false}
-                      onChange={handleAccessChange}
-                    />
-                    {perm[key]}
-                  </label>
-                );
-              })}
-
+              {groupedPermissions.plats.length > 0 && (
+                <>
+                  <span>مجله Platts</span>
+                  {groupedPermissions.plats.map((perm) => {
+                    const key = Object.keys(perm)[0];
+                    return (
+                      <label key={key} className="flex items-center gap-1 ps-4">
+                        <input
+                          type="checkbox"
+                          name={key}
+                          checked={accessLevels[key] || false}
+                          onChange={handleAccessChange}
+                        />
+                        {perm[key]}
+                      </label>
+                    );
+                  })}
+                </>
+              )}
               {/* کشیک ارشد */}
-              <span>کشیک ارشد</span>
-              {groupedPermissions.shift.map((perm) => {
-                const key = Object.keys(perm)[0];
-                return (
-                  <label key={key} className="flex items-center gap-1 ps-4">
-                    <input
-                      type="checkbox"
-                      name={key}
-                      checked={accessLevels[key] || false}
-                      onChange={handleAccessChange}
-                    />
-                    {perm[key]}
-                  </label>
-                );
-              })}
+              {groupedPermissions.shift.length > 0 && (
+                <>
+                  <span>کشیک ارشد</span>
+                  {groupedPermissions.shift.map((perm) => {
+                    const key = Object.keys(perm)[0];
+                    return (
+                      <label key={key} className="flex items-center gap-1 ps-4">
+                        <input
+                          type="checkbox"
+                          name={key}
+                          checked={accessLevels[key] || false}
+                          onChange={handleAccessChange}
+                        />
+                        {perm[key]}
+                      </label>
+                    );
+                  })}
+                </>
+              )}
             </div>
           </div>
         </div>

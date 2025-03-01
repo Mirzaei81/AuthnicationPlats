@@ -29,7 +29,7 @@ export const UserInformation = () => {
   const handleRowClick = (row) => {
     setSelectedRow(row);
   };
-  console.log(data);
+
   return (
     <div className="flex">
       <EditButtonsList selectedRow={selectedRow} data={data} />

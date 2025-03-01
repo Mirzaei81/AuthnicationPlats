@@ -55,9 +55,6 @@ const EditUserPannelModal = ({ onClose, onEditSuccess, selectedRow }) => {
       roles: rolesString,
     };
 
-    console.log(requestBody);
-    console.log(requestBody, roleName);
-
     try {
       const response = await editRole(requestBody, roleName);
       onEditSuccess();
@@ -95,37 +92,45 @@ const EditUserPannelModal = ({ onClose, onEditSuccess, selectedRow }) => {
             </div>
             <div className="pr-4 text-xs">
               {/* Platts */}
-              <span>مجله Platts</span>
-              {groupedPermissions.plats.map((perm) => {
-                const key = Object.keys(perm)[0];
-                return (
-                  <label key={key} className="flex items-center gap-1 ps-4">
-                    <input
-                      type="checkbox"
-                      name={key}
-                      checked={accessLevels.includes(key)} // Check if the role is selected
-                      onChange={handleAccessChange}
-                    />
-                    {perm[key]}
-                  </label>
-                );
-              })}
+              {groupedPermissions.plats.length > 0 && (
+                <>
+                  <span>مجله Platts</span>
+                  {groupedPermissions.plats.map((perm) => {
+                    const key = Object.keys(perm)[0];
+                    return (
+                      <label key={key} className="flex items-center gap-1 ps-4">
+                        <input
+                          type="checkbox"
+                          name={key}
+                          checked={accessLevels.includes(key)} // Check if the role is selected
+                          onChange={handleAccessChange}
+                        />
+                        {perm[key]}
+                      </label>
+                    );
+                  })}
+                </>
+              )}
               {/* کشیک ارشد */}
-              <span>کشیک ارشد</span>
-              {groupedPermissions.shift.map((perm) => {
-                const key = Object.keys(perm)[0];
-                return (
-                  <label key={key} className="flex items-center gap-1 ps-4">
-                    <input
-                      type="checkbox"
-                      name={key}
-                      checked={accessLevels.includes(key)} // Check if the role is selected
-                      onChange={handleAccessChange}
-                    />
-                    {perm[key]}
-                  </label>
-                );
-              })}
+              {groupedPermissions.shift.length > 0 && (
+                <>
+                  <span>کشیک ارشد</span>
+                  {groupedPermissions.shift.map((perm) => {
+                    const key = Object.keys(perm)[0];
+                    return (
+                      <label key={key} className="flex items-center gap-1 ps-4">
+                        <input
+                          type="checkbox"
+                          name={key}
+                          checked={accessLevels.includes(key)} // Check if the role is selected
+                          onChange={handleAccessChange}
+                        />
+                        {perm[key]}
+                      </label>
+                    );
+                  })}
+                </>
+              )}
             </div>
           </div>
         </div>

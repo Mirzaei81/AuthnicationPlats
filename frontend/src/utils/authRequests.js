@@ -33,11 +33,6 @@ export const verifyOtp = async (method, value, otp) => {
 };
 
 export const resetPassword = async (phone_number, password, confirmation) => {
-  console.log({
-    phone_number,
-    password,
-    confirmation,
-  });
   try {
     const response = await axios.post("/api/reset/", {
       phone_number,

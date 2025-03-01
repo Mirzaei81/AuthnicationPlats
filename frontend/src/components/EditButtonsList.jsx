@@ -9,17 +9,17 @@ import {
   addIcon,
   deleteIcon,
   editIcon,
-} from "../contexts/icons";
+} from "../assets/icons";
 import AddUserInfoModal from "./AddUserInfoModal";
 import AddUserPannelModal from "./AddUserPannelModal";
 import DeleteUserInfoModal from "./DeleteUserInfoModal";
 import DeleteUserPannelModal from "./DeleteUserPannelModal";
 import EditUserInfoModal from "./EditUserInfoModal";
 import EditUserPannelModal from "./EditUserPannelModal";
+import Cookies from "js-cookie";
 
 const EditButtonsList = ({ selectedRow, data }) => {
   const location = useLocation();
-  console.log(location);
   const [modals, setModals] = useState({});
 
   // Map paths to modals and titles
@@ -58,7 +58,6 @@ const EditButtonsList = ({ selectedRow, data }) => {
   };
 
   const currentRoute = routeConfig[location.pathname] || {};
-  console.log(currentRoute);
 
   // Handle modal visibility
   const toggleModal = (modalType) => {
@@ -99,7 +98,7 @@ const EditButtonsList = ({ selectedRow, data }) => {
         {pdfIcon} چاپ
       </button>
 
-      {localStorage.getItem("plats_admin") === "true" && (
+      {Cookies.get("plats_admin") === "true" && (
         <>
           <button
             className="cursor-pointer"

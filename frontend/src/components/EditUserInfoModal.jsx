@@ -11,8 +11,6 @@ const EditUserInfoModal = ({ onClose, selectedRow, onEditSuccess }) => {
 
   const { register, handleSubmit, control, setValue } = useForm();
 
-  console.log(selectedRow);
-
   useEffect(() => {
     if (selectedRow) {
       setValue("firstname", selectedRow.firstname);

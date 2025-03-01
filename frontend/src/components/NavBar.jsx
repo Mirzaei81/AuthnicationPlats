@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { arrowIcon, offIcon, userIcon1, userIcon2 } from "../contexts/icons";
+import { arrowIcon, offIcon, userIcon1, userIcon2 } from "../assets/icons";
+import Cookies from "js-cookie";
 
 const NavBar = () => {
-  const user = localStorage.getItem("token");
+  const user = Cookies.get("token");
   return (
     <div className="flex justify-between bg-gray-300">
       <nav className="flex w-full text-sm">
@@ -29,7 +30,7 @@ const NavBar = () => {
               className="flex items-end gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
             >
               {userIcon2}
-              <span>پنل کاربری</span>
+              <span>نقش کاربری</span>
             </Link>
           </div>
         </div>
