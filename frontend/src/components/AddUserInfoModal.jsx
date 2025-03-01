@@ -17,8 +17,9 @@ const AddUserInfoModal = ({ onClose, onAddSuccess }) => {
     { name: "username", label: "نام کاربری", type: "text" },
     { name: "phone_number", label: "شماره تلفن", type: "text" },
     { name: "email", label: "ایمیل", type: "email" },
-    { name: "password", label: "رمز عبور", type: "password" },
-    { name: "confirmPassword", label: "تکرار رمز عبور", type: "password" },
+    { name: "current_password", label: "رمز عبور فعلی شما", type: "current_password" },
+    { name: "password", label: "رمز عبور کاربر", type: "password" },
+    { name: "confirmPassword", label: "تکرار رمز عبور کاربر", type: "password" },
   ];
 
   useEffect(() => {
@@ -58,6 +59,7 @@ const AddUserInfoModal = ({ onClose, onAddSuccess }) => {
       password: data.password,
       is_superuser: false, // default
       roleName: roleName,
+      current_password: data.current_password,
     };
 
     try {
@@ -105,9 +107,6 @@ const AddUserInfoModal = ({ onClose, onAddSuccess }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex w-full">
             <div className="flex flex-col items-start gap-2 mb-4 w-full">
-              {formFields.map((field) =>
-                renderInputField(field.name, field.label, field.type)
-              )}
               <div className="relative w-full mb-4">
                 <select
                   className="w-full bg-slate-100 py-1.5 px-2 rounded-lg border-2 border-black text-sm focus:outline-none"
@@ -144,6 +143,9 @@ const AddUserInfoModal = ({ onClose, onAddSuccess }) => {
                   ))}
                 </select>
               </div>
+              {formFields.map((field) =>
+                renderInputField(field.name, field.label, field.type)
+              )}
             </div>
             <div className="pb-6">
               <PasswordValidator

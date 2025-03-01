@@ -63,6 +63,7 @@ const EditUserInfoModal = ({ onClose, selectedRow, onEditSuccess }) => {
       password: data.password,
       is_superuser: false, // default
       roleName: roleName,
+      current_password: data.current_password,
     };
 
     try {
@@ -143,6 +144,12 @@ const EditUserInfoModal = ({ onClose, selectedRow, onEditSuccess }) => {
                   ))}
                 </select>
               </div>
+              {renderInputField(
+                "current_password",
+                "رمز عبور فعلی شما",
+                "current_password",
+                "رمز عبور فعلی خود را وارد کنید"
+              )}
               {renderInputField(
                 "password",
                 "رمز عبور",
