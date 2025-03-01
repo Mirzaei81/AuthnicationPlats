@@ -3,6 +3,20 @@
 import os
 import sys
 
+def run_seed():
+    """ Seed database based on mode
+
+    :param mode: refresh / clear 
+    :return:
+    """
+    # Creating 15 addresses
+    from user.models import userRoles
+    admin =  userRoles.objects.get(name="Admin")
+    anon =  userRoles.objects.get(name="ananymous")
+    if admin==None :
+        userRoles.objects.create(name="Admin",userRole=b"111111111")
+    if anon==None:
+        userRoles.objects.create(name="ananymous",userRole=b"000000000")
 
 def main():
     """Run administrative tasks."""
@@ -21,14 +35,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-def run_seed(self):
-    """ Seed database based on mode
-
-    :param mode: refresh / clear 
-    :return:
-    """
-    # Creating 15 addresses
-    from user.models import userRoles
-    userRoles.objects.create("ananymous",b"00000000")
-    userRoles.objects.create("Admin",b"111111111")

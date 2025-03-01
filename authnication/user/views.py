@@ -17,10 +17,16 @@ from django.db.utils import IntegrityError
 import traceback
 
 
+
 @api_view(["GET"])
-@permission_classes([AllowAny])
 def get_permistion(request):
-	return Response({"permision":[{m.name:v} for m,v in perimision_dict.items()]})
+	currentUserRole:bytes = request.user.role
+	permision = []
+	for k,v in perimision_dict.items():
+		if andbytes(k.value,currentUserRole)==k.value:
+			permision.append({k.name:v})
+	return Response({"permision":permision})
+
 
 @swagger_auto_schema(method="POST",
 	tags=["login"],
@@ -159,6 +165,8 @@ def userPatch(request):
 				registerData.save()
 			except IntegrityError:
 				return Response({"username":"user with this username aleady exist"})
+			except PermissionError:
+				return Response({"roleName":"current User have no permision to create this user"},status=401)
 			return Response(status=201)
 		else:
 			return Response(registerData.errors,status=400)
@@ -179,6 +187,8 @@ def userPatch(request):
 						return Response(status=400,data={"error":"User is not admin nor the current user"})
 				else:
 					return Response({"error":validated_data.errors},status=400)
+			except PermissionError:
+				return Response({"roleName":"current User have no permision to create this user"},status=401)
 			except Exception as e:
 				print(traceback.format_exc())
 				return Response({"error":e.__str__()} )
@@ -256,6 +266,14 @@ class UserMappinView(ModelViewSet):
 			return Response({"name":name,"permisions":permisionNames})
 		userRoles.objects.create(userRole=b"000000000",name=name)
 		return Response({"name":name,"permisions":""})
+	def list(self,request):
+		currentUserRole:bytes = self.request.user.role
+		permision = []
+		for ur in self.queryset:
+			if andbytes(ur.userRole,currentUserRole)==ur.userRole:
+				permision.append(ur)
+		serializer = self.get_serializer(permision,many=True)
+		return Response(serializer.data)
 	def get_object(self):
 		return self.queryset.filter(name=self.kwargs["name"]).first()
 	def destroy(self, request, *args, **kwargs):

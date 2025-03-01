@@ -11,6 +11,14 @@ class Permisions(Enum):
 	shift_supervisor_readonly= b"10000"
 	shift_supervisor_px= b"1000000"
 	shift_supervisor_reforming= b"1000000000"
+allowed_roles = {
+	Permisions.shift_supervisor_admin :[Permisions.shift_supervisor_admin,Permisions.shift_supervisor_admin],
+	Permisions.shift_supervisor_btx :[Permisions.shift_supervisor_btx],
+	Permisions.shift_supervisor_tank :[Permisions.shift_supervisor_tank],
+	Permisions.shift_supervisor_px :[Permisions.shift_supervisor_px],
+	Permisions.shift_supervisor_reforming :[Permisions.shift_supervisor_reforming],
+	Permisions.plats_admin :[Permisions.plats_admin,Permisions.plats_readonly],
+}
 perimision_dict = {
 	Permisions.plats_admin :"ادمین پلتس",
 	Permisions.plats_readonly :"پلتس خواندن",
@@ -21,7 +29,7 @@ perimision_dict = {
 	Permisions.shift_supervisor_px:"کشیک ارشد - px",
 	Permisions.shift_supervisor_reforming:"کشیک ارشد - refroming",
 }	
-def andbytes(abytes, bbytes):
+def andbytes(abytes:bytes, bbytes:bytes):
 	return bytes([a & b for a, b in zip(abytes[::-1], bbytes[::-1])][::-1])
 
 def orbytes(a, b):
