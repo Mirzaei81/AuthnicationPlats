@@ -1,6 +1,6 @@
 from rest_framework import serializers 
 from .models import User,userRoles
-from .permision import Permisions,andbytes,orbytes
+from .permision import Permisions,andbytes,orbytes,allowed_roles
 from django.shortcuts import  get_object_or_404
 
 
@@ -44,12 +44,25 @@ class  registerSerilizer(serializers.Serializer):
 				instance.set_password(v)
 			elif(k =="roleName"):
 				ur = get_object_or_404(userRoles,name=v)
+				userPermision = self.request.user.role
+				for p in Permisions:
+					if andbytes(p.value,userPermision)==p:
+						for role in allowed_roles[p]:
+							if andbytes(ur.userRole,role)!=role: #if the target role doesn't have permsion araise eror
+								raise PermissionError
 				setattr(instance,"role",ur.userRole)
 			else:
 				setattr(instance,k,v)
 		instance.save()
 	def create(self, validated_data):
 		permision = userRoles.objects.filter(name=validated_data.get("roleName",None)).first().userRole
+		userPermision = self.request.user.role
+		for p in Permisions:
+			if andbytes(p.value,userPermision)==p:
+				for role in allowed_roles[p]:
+					if andbytes(permision,role)!=role: #if the target role doesn't have permsion araise eror
+						raise PermissionError
+
 		if validated_data["is_superuser"]:
 			return User.objects.create_superuser(username=validated_data["username"],password=validated_data["password"],
 										firstname=validated_data["firstname"],

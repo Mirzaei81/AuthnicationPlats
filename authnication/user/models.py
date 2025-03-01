@@ -44,19 +44,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom User Model for authentication management through email and/or username
     """
-    firstname =models.CharField(max_length=255) 
-    lastname = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255, unique=True)
+    firstname =models.CharField(max_length=255,blank=True) 
+    lastname = models.CharField(max_length=255,blank=True)
+    email = models.EmailField(max_length=255)
     username = models.CharField(max_length=150, unique=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_verified = models.BooleanField(default=False)
-    reset_password = models.BooleanField(default=False)
-    phone_number =models.CharField(max_length=255)
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
-    role = models.BinaryField(null=True)
+    is_verified = models.BooleanField(default=False,blank=True)
+    reset_password = models.BooleanField(default=False,blank=True)
+    phone_number =models.CharField(max_length=255,blank=True)
+    created_date = models.DateTimeField(auto_now_add=True,blank=True)
+    updated_date = models.DateTimeField(auto_now=True,blank=True)
+    role = models.BinaryField(null=True,default=b"000000000",blank=True)
     objects = UserManager()
     USERNAME_FIELD = "username"  # Use username for authentication
     REQUIRED_FIELDS = ['email',"phone_number"]  # Only eamil is required for extra fields
