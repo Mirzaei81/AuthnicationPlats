@@ -148,7 +148,6 @@ def reset_password(request):
     },
 ))
 @api_view(["PUT","DELETE","GET","POST"])
-@permission_classes([AllowAny])
 def userPatch(request):
 	if(request.method =="POST"):
 		pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#!*^$@&]).{8,}$"
@@ -169,8 +168,15 @@ def userPatch(request):
 			validated_data = registerSerilizer(data=request.data)
 			try:
 				if(validated_data.is_valid()):
-					validated_data.update(user,validated_data.validated_data)
-					return Response(status=201)
+					current_password = validated_data.data["current_password"]
+					targetUser = authenticate(username=request.user.username,password=current_password)
+					if(targetUser==None):
+						return Response(status=400,)
+					if(targetUser.is_superuser or user==targetUser):
+						validated_data.update(user,validated_data.validated_data)
+						return Response(status=201)
+					else:
+						return Response(status=400,data={"error":"User is not admin nor the current user"})
 				else:
 					return Response({"error":validated_data.errors},status=400)
 			except Exception as e:

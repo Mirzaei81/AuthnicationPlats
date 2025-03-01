@@ -35,8 +35,11 @@ class  registerSerilizer(serializers.Serializer):
 	password = serializers.CharField(allow_blank=True)
 	is_superuser = serializers.BooleanField()
 	roleName = serializers.CharField()
+	current_password = serializers.CharField()
 	def update(self, instance, validated_data):
 		for k,v in validated_data.items():
+			if(k=="current_password"):
+				continue
 			if(k=="password"):
 				instance.set_password(v)
 			elif(k =="roleName"):
@@ -62,6 +65,7 @@ class  registerSerilizer(serializers.Serializer):
 class UserSerilizer(serializers.ModelSerializer):
 	role = serializers.SerializerMethodField()
 	def get_role(self,obj):
+		print(obj.role)
 		ur = get_object_or_404(userRoles,userRole=obj.role)
 		return  ur.name
 	class Meta:
